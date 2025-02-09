@@ -1,0 +1,49 @@
+name: Tinychains Test_CI
+
+on:
+    pull_request:
+        branches:
+            - develop
+
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: ./src/backend/
+
+        strategy:
+            matrix:
+                python-version: [3.9]
+        
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: ${{ matrix.python-version}}
+
+            - name: Set up Environment Variables
+              run: |
+                echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+                echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+                echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+                echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> $GITHUB_ENV
+                echo "PORT=${{ secrets.PORT }}" >> $GITHUB_ENV
+            
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements/development.txt
+
+            - name: Run migrations
+              run: python manage.py migrate
+
+            - name: Run Tinychains tests
+              run: python manage.py test
+
+
+
