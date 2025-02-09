@@ -1,0 +1,6 @@
+-r base.txt # Inherit from base.txt
+django-debug-toolbar
+pytest-django
+pytest
+factory_boy
+django-extensions

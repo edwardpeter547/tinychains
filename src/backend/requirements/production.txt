@@ -1,0 +1,4 @@
+-r base.txt  # Inherit from base.txt
+gunicorn  # WSGI server
+psycopg2-binary  # PostgreSQL database adapter
+whitenoise  # Serve static files in productio
